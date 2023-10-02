@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tabla de Productos</title>
+    <!-- Agregar el enlace a Bootstrap CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Picture</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <!-- Datos de la tabla se insertarán aquí -->
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      //Llamado GET
+
+      const apiUrl =
+        "https://04wbgynkzd.execute-api.us-east-1.amazonaws.com/dev/super";
+
+      // Configuración de la petición
+      const requestOptions = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Puedes agregar otros encabezados según sea necesario
+        },
+      };
+
+      // Realizar la petición fetch
+      fetch(apiUrl, requestOptions)
+        .then((response) => {
+          // Verificar si la respuesta es exitosa (código de estado 2xx)
+          if (!response.ok) {
+            throw new Error(
+              `Error: ${response.status} - ${response.statusText}`
+            );
+          }
+          // Convertir la respuesta a JSON
+          return response.json();
+        })
+        .then((response) => {
+          // Manejar los datos recibidos
+          console.log("Datos recibidos:", response);
+
+          // Simulación de una llamada GET y manipulación de la tabla
+          const jsonData = response.data.Items;
+          console.log(jsonData);
+
+          const tableBody = document.getElementById("table-body");
+
+          jsonData.forEach((item) => {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${item.user?.S}</td>
+                         <td>${item.description?.S}</td>
+                         <td>${item.price?.N}</td>
+                         <td><img src="${item.picture?.S}" alt="Product Image" width="50"></td>`;
+            tableBody.appendChild(row);
+          });
+        })
+        .catch((error) => {
+          // Manejar errores de la petición
+          console.error("Error en la petición fetch:", error);
+        });
+    </script>
+
+    <!-- Agregar el script de Bootstrap y Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

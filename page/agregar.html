@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario POST con Bootstrap</title>
+
+    <!-- Agregar enlaces a Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <div class="container mt-5">
+      <form id="myForm">
+        <div class="mb-3">
+          <label for="name" class="form-label">Nombre:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            name="name"
+            value="fromaws"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="price" class="form-label">Precio:</label>
+          <input
+            type="number"
+            class="form-control"
+            id="price"
+            name="price"
+            value="7510.65"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Descripción:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="description"
+            name="description"
+            value="simple description"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label for="picture" class="form-label">URL de la imagen:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="picture"
+            name="picture"
+            value="http://www.google/product.png"
+            required
+          />
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="submitForm()">
+          Enviar
+        </button>
+      </form>
+    </div>
+
+    <!-- Agregar enlaces a Bootstrap JS y Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      function submitForm() {
+        const form = document.getElementById("myForm");
+        const formData = new FormData(form);
+        var object = {};
+        formData.forEach((value, key) => (object[key] = value));
+        object.price = parseInt(object.price);
+        var json = JSON.stringify(object);
+
+        const apiUrl =
+          "https://04wbgynkzd.execute-api.us-east-1.amazonaws.com/dev/agregar/conproxy";
+        console.log(json);
+
+        // Configuración de la petición
+        const requestOptions = {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: json,
+        };
+
+        // Realizar la petición fetch
+        fetch(apiUrl, requestOptions)
+          .then((response) => {
+            // Verificar si la respuesta es exitosa (código de estado 2xx)
+            if (!response.ok) {
+              throw new Error(
+                `Error: ${response.status} - ${response.statusText}`
+              );
+            }
+            // Convertir la respuesta a JSON
+            return response.json();
+          })
+          .then((data) => {
+            // Manejar los datos recibidos
+            console.log("Datos recibidos:", data);
+          })
+          .catch((error) => {
+            // Manejar errores de la petición
+            console.error("Error en la petición fetch:", error);
+          });
+      }
+    </script>
+  </body>
+</html>
